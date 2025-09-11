@@ -4,6 +4,7 @@ resource "azurerm_cosmosdb_account" "librechat" {
   location                  = azurerm_resource_group.this.location
   offer_type                = "Standard"
   kind                      = "MongoDB"
+  mongo_server_version      = "4.2"
   enable_automatic_failover = false
   enable_free_tier          = var.use_cosmosdb_free_tier
 
@@ -19,11 +20,9 @@ resource "azurerm_cosmosdb_account" "librechat" {
     failover_priority = 0
   }
   capabilities {
-    name = "MongoDBv3.4"
+     name = "EnableServerless"
   }
-  capabilities {
-    name = "EnableServerless"
-  }
+
   capabilities {
     name = "EnableMongo"
   }

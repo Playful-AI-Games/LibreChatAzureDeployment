@@ -42,7 +42,9 @@ resource "azurerm_linux_web_app" "librechat" {
     HOST = "0.0.0.0"
     PORT = 80
 
-    MONGO_URI = azurerm_cosmosdb_account.librechat.connection_strings[0]
+    # Use provided mongo_uri if set; otherwise, use CosmosDB connection string
+    # with conservative connection options to reduce metadata throttling (429/3200).
+    MONGO_URI = var.mongo_uri != "" ? var.mongo_uri : "${azurerm_cosmosdb_account.librechat.connection_strings[0]}&maxPoolSize=5&maxConnecting=2&retryWrites=false&serverSelectionTimeoutMS=15000&appName=LibreChat"
 
     DOMAIN_CLIENT = "http://localhost:3080"
     DOMAIN_SERVER = "http://localhost:3080"
@@ -81,14 +83,16 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     AZURE_API_KEY       = module.openai.openai_primary_key
-    AZURE_OPENAI_MODELS = "gpt-3.5-turbo,gpt-4"
+    AZURE_OPENAI_MODELS = "gpt-4.1"
     # AZURE_OPENAI_DEFAULT_MODEL = "gpt-3.5-turbo"
     # PLUGINS_USE_AZURE = true
 
-    AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = true
+    # If an explicit deployment name is provided, use it and
+    # disable using the model name as the deployment name.
+    AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = var.azure_openai_api_deployment_name == "" ? true : false
 
     AZURE_OPENAI_API_INSTANCE_NAME = split("//", split(".", module.openai.openai_endpoint)[0])[1]
-    # AZURE_OPENAI_API_DEPLOYMENT_NAME =
+    AZURE_OPENAI_API_DEPLOYMENT_NAME = var.azure_openai_api_deployment_name != "" ? var.azure_openai_api_deployment_name : "gpt-4.1"
     AZURE_OPENAI_API_VERSION = var.azure_openai_api_version
     # AZURE_OPENAI_API_COMPLETIONS_DEPLOYMENT_NAME =
     # AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME  =
@@ -324,7 +328,7 @@ resource "azurerm_linux_web_app" "librechat" {
     DOCKER_ENABLE_CI                    = false
     WEBSITES_PORT                       = 80
     PORT                                = 80
-    DOCKER_CUSTOM_IMAGE_NAME            = "ghcr.io/danny-avila/librechat-dev-api:latest"
+    DOCKER_CUSTOM_IMAGE_NAME            = "ghcr.io/danny-avila/librechat-api:latest"
     NODE_ENV                            = "production"
   }
   virtual_network_subnet_id = azurerm_subnet.librechat_subnet.id

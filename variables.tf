@@ -65,62 +65,14 @@ variable "deployments" {
     scale_type      = string
   }))
   default = {
-    "gpt-35-turbo" = {
-      name            = "gpt-35-turbo"
-      rai_policy_name = "Microsoft.Default"
-      model_name      = "gpt-35-turbo"
-      model_format    = "OpenAI"
-      model_version   = "0613"
-      scale_type      = "Standard"
-    },
-    "gpt-35-turbo-16k" = {
-      name            = "gpt-35-turbo-16k"
-      rai_policy_name = "Microsoft.Default"
-      model_name      = "gpt-35-turbo-16k"
-      model_format    = "OpenAI"
-      model_version   = "0613"
-      scale_type      = "Standard"
-    },
-    # "gpt-35-turbo-1106" = {
-    #   name = "gpt-35-turbo-1106"
-    #   rai_policy_name = "Microsoft.Default"
-    #   model_name = "gpt-35-turbo"
-    #   model_format = "OpenAI"
-    #   model_version = "1106"
-    #   scale_type = "Standard"
-    # },
-    "gpt-4" = {
-      name            = "gpt-4"
+    "gpt-4.1" = {
+      name            = "gpt-4.1"
       rai_policy_name = "Microsoft.Default"
       model_name      = "gpt-4"
       model_format    = "OpenAI"
-      model_version   = "0613"
+      model_version   = "2025-04-14"
       scale_type      = "Standard"
     },
-    "gpt-4-32k" = {
-      name            = "gpt-4-32k"
-      rai_policy_name = "Microsoft.Default"
-      model_name      = "gpt-4-32k"
-      model_format    = "OpenAI"
-      model_version   = "0613"
-      scale_type      = "Standard"
-    },
-    # "gpt-4-1106-preview" = {
-    #   name = "gpt-4-1106-preview"
-    #   rai_policy_name = "Microsoft.Default"
-    #   model_name = "gpt-4"
-    #   model_format = "OpenAI"
-    #   model_version = "1106-Preview"
-    #   scale_type = "Standard"
-    # },
-    # "gpt-4-vision-preview" = {
-    #   name = "gpt-4-vision-preview"
-    #   rai_policy_name = "Microsoft.Default"
-    #   model_name = "gpt-4"
-    #   model_format = "OpenAI"
-    #   model_version = "vision-preview"
-    #   scale_type = "Standard"
-    # },
     "text-embedding-ada-002" = {
       name            = "text-embedding-ada-002"
       rai_policy_name = "Microsoft.Default"
