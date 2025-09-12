@@ -67,26 +67,28 @@ public_network_access_enabled = false
 # to Azure Blob Storage with MCP servers and agents configured.
 # See docs: https://www.librechat.ai/docs/features/mcp
 #
-# Enable MCP support (creates config automatically in Azure Blob Storage)
-# enable_mcp = true
+# IMPORTANT: Choose ONE of these options (they are mutually exclusive):
 #
-# Select which MCP servers to enable
-# Options: filesystem, fetch, puppeteer, github, sqlite, memory
+# Option 1: Enable MCP (auto-generates config in Azure Blob Storage)
+# enable_mcp = true
 # mcp_servers = ["filesystem", "fetch", "puppeteer"]
 #
-# Alternative: Use a custom librechat.yaml from URL or path
-# (Only needed if not using enable_mcp auto-generation)
+# Option 2: Use a custom librechat.yaml from URL or path
 # config_path = "https://example.com/configs/librechat.yaml"
+#
+# ERROR: Setting both enable_mcp=true AND config_path will cause Terraform to fail.
+# When enable_mcp=true, config is auto-generated and config_path is ignored.
 #
 # Optional MCP behavior tuning:
 # mcp_oauth_on_auth_error      = "true"   # Treat 401/403 as OAuth requirement when metadata absent
 # mcp_oauth_detection_timeout  = "5000"   # OAuth detection timeout (ms)
 # mcp_connection_check_ttl     = "60000"  # Cache connection status checks (ms)
 
-# IMPORTANT: Set to true to enable MCP features in LibreChat
-enable_mcp = true
-mcp_servers = ["filesystem", "fetch", "puppeteer"]
-# config_path = ""
+# Example configuration (uncomment one option):
+# enable_mcp = true
+# mcp_servers = ["filesystem", "fetch", "puppeteer"]
+# OR:
+# config_path = "https://example.com/configs/librechat.yaml"
 # mcp_oauth_on_auth_error = ""
 # mcp_oauth_detection_timeout = ""
 # mcp_connection_check_ttl = ""

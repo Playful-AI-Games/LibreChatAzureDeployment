@@ -137,7 +137,7 @@ variable "mcp_servers" {
 }
 
 variable "config_path" {
-  description = "Optional path or URL to a custom librechat.yaml used by LibreChat (enables MCP via mcpServers config). Auto-generated when enable_mcp is true."
+  description = "Optional path or URL to a custom librechat.yaml. Only used when enable_mcp is false. Setting both enable_mcp=true and config_path will result in an error."
   type        = string
   default     = ""
 }
@@ -156,6 +156,19 @@ variable "mcp_oauth_detection_timeout" {
 
 variable "mcp_connection_check_ttl" {
   description = "Cache connection status checks for this many ms to avoid expensive verification (string value, e.g. '60000')."
+  type        = string
+  default     = ""
+}
+
+
+variable "amplitude_api_instantgarden" {
+  description = "amplitude api key for amplitude-analytics-instantgarden MCP server"
+  type        = string
+  default     = ""
+}
+
+variable "amplitude_secret_instantgarden" {
+  description = "amplitude secret key for amplitude-analytics-instantgarden MCP server"
   type        = string
   default     = ""
 }

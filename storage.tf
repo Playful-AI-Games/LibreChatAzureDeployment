@@ -45,7 +45,7 @@ resource "azurerm_storage_container" "config" {
 # Generate librechat.yaml content
 locals {
   librechat_yaml_content = var.enable_mcp ? templatefile("${path.module}/templates/librechat.yaml.tpl", {
-    enable_agents     = var.enable_mcp
+    enable_mcp        = var.enable_mcp
     mcp_servers       = var.mcp_servers
     app_title         = var.app_title
     azure_api_key     = "$${AZURE_API_KEY}" # Escaped to be literal in output

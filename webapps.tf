@@ -1,3 +1,12 @@
+# Validation: Ensure config_path and enable_mcp are not both set
+locals {
+  # This will cause terraform to fail if both are set
+  validate_config = var.enable_mcp && var.config_path != "" ? file("ERROR: config_path cannot be set when enable_mcp is true. When MCP is enabled, the config is auto-generated and hosted in Azure Blob Storage.") : null
+  
+  # Determine the CONFIG_PATH value based on settings
+  config_path_value = var.enable_mcp ? azurerm_storage_blob.librechat_config[0].url : var.config_path
+}
+
 resource "azurerm_service_plan" "librechat" {
   name                = "librechat-asp${random_string.random_postfix.result}"
   location            = azurerm_resource_group.this.location
@@ -212,6 +221,10 @@ resource "azurerm_linux_web_app" "librechat" {
     #-----------------
     # ZAPIER_NLA_API_KEY=
 
+    # AMPLITUDE Analytics for InstantGarden MCP
+    AMPLITUDE_API_INSTANTGARDEN    = var.amplitude_api_instantgarden
+    AMPLITUDE_SECRET_INSTANTGARDEN = var.amplitude_secret_instantgarden
+
     #==================================================#
     #                      Search                      #
     #==================================================#
@@ -350,9 +363,7 @@ resource "azurerm_linux_web_app" "librechat" {
     NODE_ENV                            = "production"
     },
     // Use auto-generated config URL when MCP is enabled, otherwise use custom config_path if provided
-    var.enable_mcp ? { CONFIG_PATH = azurerm_storage_blob.librechat_config[0].url } : (
-      var.config_path != "" ? { CONFIG_PATH = var.config_path } : {}
-    ),
+    local.config_path_value != "" ? { CONFIG_PATH = local.config_path_value } : {},
     // Optional MCP configuration flags/timeouts
     var.mcp_oauth_on_auth_error != "" ? { MCP_OAUTH_ON_AUTH_ERROR = var.mcp_oauth_on_auth_error } : {},
     var.mcp_oauth_detection_timeout != "" ? { MCP_OAUTH_DETECTION_TIMEOUT = var.mcp_oauth_detection_timeout } : {},

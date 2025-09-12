@@ -21,7 +21,7 @@ interface:
   termsOfService:
     externalUrl: ""
     openNewTab: true
-%{ if enable_agents ~}
+%{ if enable_mcp ~}
   modalAcceptance: true
   modalTitle: "Terms of Service for LibreChat"
   modalContent: "MCP ON"
@@ -53,114 +53,43 @@ endpoints:
       params:
         api-version: "${azure_version}"
 
-#%{ if enable_agents ~}
-# Agents configuration (required for MCP)
+# Agents configuration (currently disabled - uncomment if needed)
 #agents:
-  # Enable agents endpoint
+#  # Enable agents endpoint
 #  enabled: true
-  
-  # Maximum recursion depth for agent actions
+#  
+#  # Maximum recursion depth for agent actions
 #  recursionLimit: 10
-  
-  # Maximum allowed recursion limit that can be set
+#  
+#  # Maximum allowed recursion limit that can be set
 #  maxRecursionLimit: 10
-  
-  # Enable/disable the agent builder interface
+#  
+#  # Enable/disable the agent builder interface
 #  disableBuilder: false
-  
-  # Maximum number of citations to display
+#  
+#  # Maximum number of citations to display
 #  maxCitations: 5
-  
-  # Agent capabilities
+#  
+#  # Agent capabilities
 #  capabilities:
 #    - "webSearch"
 #    - "codeInterpreter"
 
+%{ if enable_mcp ~}
+
 # MCP (Model Context Protocol) Servers
 mcpServers:
-%{ if contains(mcp_servers, "filesystem") ~}
-  # Filesystem MCP Server - provides file system access
-  filesystem:
-    type: "stdio"
-    command: "npx"
+  amplitude-analytics-instantgarden:
+    command: npx
     args:
-      - "-y"
-      - "@modelcontextprotocol/server-filesystem"
-      - "/app"  # Allow access to app directory in container
-    timeout: 30000
-    initTimeout: 10000
-    serverInstructions: "Provides read/write access to the application filesystem. Use this for reading configuration files, logs, and managing application data."
+      - -y
+      - amplitude-mcp
+      - --amplitude-api-key=$${AMPLITUDE_API_INSTANTGARDEN}
+      - --amplitude-secret-key=$${AMPLITUDE_SECRET_INSTANTGARDEN}
+
 %{ endif ~}
 
-%{ if contains(mcp_servers, "fetch") ~}
-  # Fetch MCP Server - provides HTTP request capabilities
-  fetch:
-    type: "stdio"
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-fetch"
-    timeout: 30000
-    initTimeout: 10000
-    serverInstructions: "Provides HTTP fetch capabilities for making web requests. Use this for API calls and web scraping."
-%{ endif ~}
 
-%{ if contains(mcp_servers, "puppeteer") ~}
-  # Puppeteer MCP Server - provides web automation
-  puppeteer:
-    type: "stdio"
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-puppeteer"
-    timeout: 60000
-    initTimeout: 15000
-    serverInstructions: "Provides web browser automation capabilities using Puppeteer. Use this for complex web scraping, form filling, and browser automation tasks. Do not access local files or internal IP addresses."
-%{ endif ~}
-
-%{ if contains(mcp_servers, "github") ~}
-  # GitHub MCP Server - provides GitHub API access
-  github:
-    type: "stdio"
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-github"
-    env:
-      GITHUB_TOKEN: "$${GITHUB_TOKEN}"
-    timeout: 30000
-    initTimeout: 10000
-    serverInstructions: "Provides access to GitHub repositories, issues, pull requests, and other GitHub features. Requires GITHUB_TOKEN environment variable."
-%{ endif ~}
-
-%{ if contains(mcp_servers, "sqlite") ~}
-  # SQLite MCP Server - provides SQLite database access
-  sqlite:
-    type: "stdio"
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-sqlite"
-      - "--db-path"
-      - "/app/data/database.sqlite"
-    timeout: 30000
-    initTimeout: 10000
-    serverInstructions: "Provides SQLite database access. Use this for querying and managing local SQLite databases."
-%{ endif ~}
-
-%{ if contains(mcp_servers, "memory") ~}
-  # Memory MCP Server - provides persistent memory across conversations
-  memory:
-    type: "stdio"
-    command: "npx"
-    args:
-      - "-y"
-      - "@modelcontextprotocol/server-memory"
-    timeout: 30000
-    initTimeout: 10000
-    serverInstructions: "Provides persistent memory storage across conversations. Use this to remember important information and context."
-%{ endif ~}
-%{ endif ~}
 
 # File configuration
 fileConfig:
