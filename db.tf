@@ -20,7 +20,7 @@ resource "azurerm_cosmosdb_account" "librechat" {
     failover_priority = 0
   }
   capabilities {
-     name = "EnableServerless"
+    name = "EnableServerless"
   }
 
   capabilities {

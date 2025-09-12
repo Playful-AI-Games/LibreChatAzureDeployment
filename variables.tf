@@ -109,3 +109,53 @@ variable "public_network_access_enabled" {
   type        = bool
   default     = false
 }
+
+#======================#
+# MCP / Config Options #
+#======================#
+
+variable "enable_mcp" {
+  description = "Enable MCP (Model Context Protocol) support with agents and MCP servers"
+  type        = bool
+  default     = false
+}
+
+variable "mcp_servers" {
+  description = "List of MCP servers to enable. Options: filesystem, fetch, puppeteer, github, sqlite, memory"
+  type        = list(string)
+  default     = ["filesystem", "fetch"]
+  
+  validation {
+    condition = alltrue([
+      for server in var.mcp_servers : contains(
+        ["filesystem", "fetch", "puppeteer", "github", "sqlite", "memory"],
+        server
+      )
+    ])
+    error_message = "Invalid MCP server. Valid options are: filesystem, fetch, puppeteer, github, sqlite, memory"
+  }
+}
+
+variable "config_path" {
+  description = "Optional path or URL to a custom librechat.yaml used by LibreChat (enables MCP via mcpServers config). Auto-generated when enable_mcp is true."
+  type        = string
+  default     = ""
+}
+
+variable "mcp_oauth_on_auth_error" {
+  description = "Treat 401/403 responses as OAuth requirement when no oauth metadata found (set to 'true' or 'false')."
+  type        = string
+  default     = ""
+}
+
+variable "mcp_oauth_detection_timeout" {
+  description = "Timeout in ms for OAuth detection requests (string value, e.g. '5000')."
+  type        = string
+  default     = ""
+}
+
+variable "mcp_connection_check_ttl" {
+  description = "Cache connection status checks for this many ms to avoid expensive verification (string value, e.g. '60000')."
+  type        = string
+  default     = ""
+}

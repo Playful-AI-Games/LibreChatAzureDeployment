@@ -24,7 +24,23 @@ You must have an existing Azure subscription for this to work.
 6. **Apply Terraform Configuration:** In the Terminal inside of VS-Code, run the command `terraform apply`.
 
 7. **Open LibreChat:** After finishing, terraform shows the outputs in the terminal. Open the Url of "libre_chat_url" (it might take some minutes until everything has booted)
+
+## Enable MCP (Model Context Protocol)
+
+- Provide a custom `librechat.yaml` that includes an `mcpServers` section (see: https://www.librechat.ai/docs/features/mcp). Host it at an accessible URL or a path available to the container.
+- In `terraform.tfvars`, set:
+  - `config_path` to that path or URL (supports file path or URL).
+  - Optionally tune MCP via:
+    - `mcp_oauth_on_auth_error = "true"`
+    - `mcp_oauth_detection_timeout = "5000"`
+    - `mcp_connection_check_ttl = "60000"`
+
+Note: When using a URL for `config_path`, LibreChat will fetch the YAML at startup. Ensure it contains your MCP server definitions and any required user variables.
 ## Teardown
 
 To tear down your Azure resources, run the command `terraform destroy` in the Terminal inside of VS-Code.
 
+
+
+Playful note: 
+Using mongo atlas instance, not cosmo, which was having a lot of compat problems

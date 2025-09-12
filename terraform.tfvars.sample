@@ -57,3 +57,36 @@ azure_openai_api_completions_deployment_name = ""
 azure_openai_api_version = "2024-02-01"
 azure_openai_api_embeddings_deployment_name = ""
 public_network_access_enabled = false
+
+#========================================#
+# MCP (Model Context Protocol) Config    #
+#========================================#
+#
+# Enable MCP to extend LibreChat with AI tools and agents.
+# When enabled, automatically provisions a librechat.yaml config
+# to Azure Blob Storage with MCP servers and agents configured.
+# See docs: https://www.librechat.ai/docs/features/mcp
+#
+# Enable MCP support (creates config automatically in Azure Blob Storage)
+# enable_mcp = true
+#
+# Select which MCP servers to enable
+# Options: filesystem, fetch, puppeteer, github, sqlite, memory
+# mcp_servers = ["filesystem", "fetch", "puppeteer"]
+#
+# Alternative: Use a custom librechat.yaml from URL or path
+# (Only needed if not using enable_mcp auto-generation)
+# config_path = "https://example.com/configs/librechat.yaml"
+#
+# Optional MCP behavior tuning:
+# mcp_oauth_on_auth_error      = "true"   # Treat 401/403 as OAuth requirement when metadata absent
+# mcp_oauth_detection_timeout  = "5000"   # OAuth detection timeout (ms)
+# mcp_connection_check_ttl     = "60000"  # Cache connection status checks (ms)
+
+# IMPORTANT: Set to true to enable MCP features in LibreChat
+enable_mcp = true
+mcp_servers = ["filesystem", "fetch", "puppeteer"]
+# config_path = ""
+# mcp_oauth_on_auth_error = ""
+# mcp_oauth_detection_timeout = ""
+# mcp_connection_check_ttl = ""

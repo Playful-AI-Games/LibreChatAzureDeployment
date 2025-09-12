@@ -32,7 +32,7 @@ resource "azurerm_linux_web_app" "librechat" {
     }
   }
 
-  app_settings = {
+  app_settings = merge({
     #==================================================#
     #               Server Configuration               #
     #==================================================#
@@ -57,6 +57,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #===============#
     DEBUG_LOGGING = true
     DEBUG_CONSOLE = false
+    DEBUG_VERBOSE = true  # Enable verbose logging for debugging config issues
 
     #=============#
     # Permissions #
@@ -69,7 +70,22 @@ resource "azurerm_linux_web_app" "librechat" {
     #                     Endpoints                     #
     #===================================================#
 
-    ENDPOINTS = "azureOpenAI" #openAI,azureOpenAI,bingAI,chatGPTBrowser,google,gptPlugins,anthropic
+    ENDPOINTS = "azureOpenAI,agents" #openAI,azureOpenAI,bingAI,chatGPTBrowser,google,gptPlugins,anthropic,agents
+    
+    # Enable agents endpoint for MCP support
+    AGENTS_ENDPOINT = true
+    
+    # Allow config override from CONFIG_PATH
+    ALLOW_CONFIG_OVERRIDE = "true"
+    
+    # Config cache mode
+    CONFIG_CACHE_MODE = "file"
+    
+    # Enable config validation
+    CONFIG_VALIDATE = "true"
+    
+    # Debug config loading
+    DEBUG_CONFIG = "true"
 
     # PROXY=
 
@@ -93,9 +109,9 @@ resource "azurerm_linux_web_app" "librechat" {
     # Explicitly use the deployment name "gpt-4.1" rather than model name
     AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = "false"
 
-    AZURE_OPENAI_API_INSTANCE_NAME = split("//", split(".", module.openai.openai_endpoint)[0])[1]
+    AZURE_OPENAI_API_INSTANCE_NAME   = split("//", split(".", module.openai.openai_endpoint)[0])[1]
     AZURE_OPENAI_API_DEPLOYMENT_NAME = "gpt-4.1"
-    AZURE_OPENAI_API_VERSION = var.azure_openai_api_version
+    AZURE_OPENAI_API_VERSION         = var.azure_openai_api_version
     # AZURE_OPENAI_API_COMPLETIONS_DEPLOYMENT_NAME =
     # AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME  =
 
@@ -330,9 +346,18 @@ resource "azurerm_linux_web_app" "librechat" {
     DOCKER_ENABLE_CI                    = false
     WEBSITES_PORT                       = 80
     PORT                                = 80
-    DOCKER_CUSTOM_IMAGE_NAME            = "ghcr.io/danny-avila/librechat-api:latest"
+    DOCKER_CUSTOM_IMAGE_NAME            = "ghcr.io/danny-avila/librechat:latest"
     NODE_ENV                            = "production"
-  }
+    },
+    // Use auto-generated config URL when MCP is enabled, otherwise use custom config_path if provided
+    var.enable_mcp ? { CONFIG_PATH = azurerm_storage_blob.librechat_config[0].url } : (
+      var.config_path != "" ? { CONFIG_PATH = var.config_path } : {}
+    ),
+    // Optional MCP configuration flags/timeouts
+    var.mcp_oauth_on_auth_error != "" ? { MCP_OAUTH_ON_AUTH_ERROR = var.mcp_oauth_on_auth_error } : {},
+    var.mcp_oauth_detection_timeout != "" ? { MCP_OAUTH_DETECTION_TIMEOUT = var.mcp_oauth_detection_timeout } : {},
+    var.mcp_connection_check_ttl != "" ? { MCP_CONNECTION_CHECK_TTL = var.mcp_connection_check_ttl } : {}
+  )
   virtual_network_subnet_id = azurerm_subnet.librechat_subnet.id
 
   depends_on = [azurerm_linux_web_app.meilisearch, azurerm_cosmosdb_account.librechat, module.openai]
