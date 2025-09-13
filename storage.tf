@@ -50,7 +50,7 @@ locals {
     app_title         = var.app_title
     azure_api_key     = "$${AZURE_API_KEY}" # Escaped to be literal in output
     azure_instance    = "$${AZURE_OPENAI_API_INSTANCE_NAME}"
-    azure_deployment  = "$${AZURE_OPENAI_API_DEPLOYMENT_NAME}"
+    azure_deployments = [for k, v in var.deployments : v.name]
     azure_version     = "$${AZURE_OPENAI_API_VERSION}"
   }) : ""
 }

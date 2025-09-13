@@ -33,25 +33,27 @@ interface:
   presets: true
 
 # Custom endpoints for Azure OpenAI
-endpoints:
-  custom:
-    - name: "Azure OpenAI"
-      apiKey: "${azure_api_key}"
-      baseURL: "https://${azure_instance}.openai.azure.com/openai/deployments/${azure_deployment}"
-      models:
-        default: ["gpt-4.1"]
-        fetch: false
-      titleConvo: true
-      titleModel: "gpt-4.1"
-      summarize: false
-      summaryModel: "gpt-4.1"
-      forcePrompt: false
-      modelDisplayLabel: "Azure OpenAI"
-      dropParams: ["stop", "user", "frequency_penalty", "presence_penalty"]
-      headers:
-        api-key: "${azure_api_key}"
-      params:
-        api-version: "${azure_version}"
+#endpoints:
+#  custom:
+#%{ for d in azure_deployments ~}
+#    - name: "Azure OpenAI"
+#      apiKey: "${azure_api_key}"
+#      baseURL: "https://${azure_instance}.openai.azure.com/openai/deployments/${d}"
+#      models:
+#        default: ["${d}"]
+#        fetch: false
+#      titleConvo: true
+#      titleModel: "${d}"
+#      summarize: false
+#      summaryModel: "${d}"
+#      forcePrompt: false
+#      modelDisplayLabel: "Azure OpenAI ${d}"
+#      dropParams: ["stop", "user", "frequency_penalty", "presence_penalty"]
+#      headers:
+#        api-key: "${azure_api_key}"
+#      params:
+#        api-version: "${azure_version}"
+#%{ endfor ~}
 
 # Agents configuration (currently disabled - uncomment if needed)
 #agents:

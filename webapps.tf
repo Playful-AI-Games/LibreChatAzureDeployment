@@ -5,6 +5,11 @@ locals {
   
   # Determine the CONFIG_PATH value based on settings
   config_path_value = var.enable_mcp ? azurerm_storage_blob.librechat_config[0].url : var.config_path
+
+  # Resolve Azure OpenAI deployment names with sensible defaults
+  azure_chat_deployment        = length(var.azure_openai_api_deployment_name) > 0 ? var.azure_openai_api_deployment_name : (contains(keys(var.deployments), "gpt-4.1") ? var.deployments["gpt-4.1"].name : "gpt-4.1")
+  azure_embeddings_deployment  = length(var.azure_openai_api_embeddings_deployment_name) > 0 ? var.azure_openai_api_embeddings_deployment_name : (contains(keys(var.deployments), "text-embedding-ada-002") ? var.deployments["text-embedding-ada-002"].name : "text-embedding-ada-002")
+  azure_completions_deployment = length(var.azure_openai_api_completions_deployment_name) > 0 ? var.azure_openai_api_completions_deployment_name : local.azure_chat_deployment
 }
 
 resource "azurerm_service_plan" "librechat" {
@@ -112,18 +117,18 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     AZURE_API_KEY       = module.openai.openai_primary_key
-    AZURE_OPENAI_MODELS = "gpt-4.1"
-    # AZURE_OPENAI_DEFAULT_MODEL = "gpt-4.1"
+    AZURE_OPENAI_MODELS = "gpt-4.1,gpt-4.1-mini,gpt-4o"
+    AZURE_OPENAI_DEFAULT_MODEL = "gpt-4.1"
     # PLUGINS_USE_AZURE = true
 
     # Use deployment names as configured (each model has its own deployment)
     AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = "false"
 
     AZURE_OPENAI_API_INSTANCE_NAME   = split("//", split(".", module.openai.openai_endpoint)[0])[1]
-    AZURE_OPENAI_API_DEPLOYMENT_NAME = "gpt-4.1"
+    AZURE_OPENAI_API_DEPLOYMENT_NAME = local.azure_chat_deployment
     AZURE_OPENAI_API_VERSION         = var.azure_openai_api_version
-    # AZURE_OPENAI_API_COMPLETIONS_DEPLOYMENT_NAME =
-    # AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME  =
+    AZURE_OPENAI_API_COMPLETIONS_DEPLOYMENT_NAME = local.azure_completions_deployment
+    AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME  = local.azure_embeddings_deployment
 
     #============#
     # BingAI     #

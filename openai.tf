@@ -1,7 +1,7 @@
 module "openai" {
   # application_name = "openai_service_librechat"
   source                        = "Azure/openai/azurerm"
-  version                       = "0.1.1"
+  version                       = "0.1.3"  # Updated to support capacity field for TPM configuration
   resource_group_name           = azurerm_resource_group.this.name
   location                      = azurerm_resource_group.this.location
   public_network_access_enabled = true
