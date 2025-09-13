@@ -86,6 +86,16 @@ mcpServers:
       - amplitude-mcp
       - --amplitude-api-key=$${AMPLITUDE_API_INSTANTGARDEN}
       - --amplitude-secret-key=$${AMPLITUDE_SECRET_INSTANTGARDEN}
+    timeout: 60000        # Increase request timeout to 60 seconds
+    initTimeout: 60000    # Increase initialization timeout to 60 seconds
+
+  sensortower: 
+    command: uvx
+    args: 
+      - sensortower-mcp
+    env:
+      SENSOR_TOWER_API_TOKEN: "$${SENSOR_TOWER_API_TOKEN}"
+
 
 %{ endif ~}
 
@@ -108,9 +118,9 @@ fileConfig:
     azureOpenAI:
       disabled: false
     googleVertex:
-      disabled: true
+      disabled: false
     anthropic:
-      disabled: true
+      disabled: false
   serverFileSizeLimit: 100
   avatarSizeLimit: 2
 

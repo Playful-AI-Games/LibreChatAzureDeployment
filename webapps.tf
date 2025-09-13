@@ -26,6 +26,7 @@ resource "azurerm_linux_web_app" "librechat" {
 
   site_config {
     minimum_tls_version = "1.2"
+    vnet_route_all_enabled = true  # Route all outbound traffic through VNet
 
   }
 
@@ -56,7 +57,7 @@ resource "azurerm_linux_web_app" "librechat" {
     # Note: Cosmos connection strings often already include options like
     # retryWrites and appName. Avoid appending duplicates. We only add
     # pool/concurrency and selection timeout tuning.
-    MONGO_URI = var.mongo_uri != "" ? var.mongo_uri : "${azurerm_cosmosdb_account.librechat.connection_strings[0]}&maxPoolSize=5&maxConnecting=2&serverSelectionTimeoutMS=15000"
+    MONGO_URI = var.mongo_uri # != "" ? var.mongo_uri : "${azurerm_cosmosdb_account.librechat.connection_strings[0]}&maxPoolSize=5&maxConnecting=2&serverSelectionTimeoutMS=15000"
 
     DOMAIN_CLIENT = "http://localhost:3080"
     DOMAIN_SERVER = "http://localhost:3080"
@@ -112,10 +113,10 @@ resource "azurerm_linux_web_app" "librechat" {
 
     AZURE_API_KEY       = module.openai.openai_primary_key
     AZURE_OPENAI_MODELS = "gpt-4.1"
-    # AZURE_OPENAI_DEFAULT_MODEL = "gpt-3.5-turbo"
+    # AZURE_OPENAI_DEFAULT_MODEL = "gpt-4.1"
     # PLUGINS_USE_AZURE = true
 
-    # Explicitly use the deployment name "gpt-4.1" rather than model name
+    # Use deployment names as configured (each model has its own deployment)
     AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = "false"
 
     AZURE_OPENAI_API_INSTANCE_NAME   = split("//", split(".", module.openai.openai_endpoint)[0])[1]
@@ -224,6 +225,9 @@ resource "azurerm_linux_web_app" "librechat" {
     # AMPLITUDE Analytics for InstantGarden MCP
     AMPLITUDE_API_INSTANTGARDEN    = var.amplitude_api_instantgarden
     AMPLITUDE_SECRET_INSTANTGARDEN = var.amplitude_secret_instantgarden
+    
+    # Sensor Tower API for sensortower MCP
+    SENSOR_TOWER_API_TOKEN = var.sensor_tower_api_token
 
     #==================================================#
     #                      Search                      #
@@ -371,7 +375,7 @@ resource "azurerm_linux_web_app" "librechat" {
   )
   virtual_network_subnet_id = azurerm_subnet.librechat_subnet.id
 
-  depends_on = [azurerm_linux_web_app.meilisearch, azurerm_cosmosdb_account.librechat, module.openai]
+  depends_on = [azurerm_linux_web_app.meilisearch, module.openai]
   # depends_on = [azurerm_linux_web_app.meilisearch]
 }
 

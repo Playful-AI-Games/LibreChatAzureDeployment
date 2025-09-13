@@ -17,6 +17,7 @@ deployments = {
     model_format = "OpenAI"
     model_version = "0613"
     scale_type = "Standard"
+    capacity = 20  # 20,000 tokens per minute (optional, defaults to 1,000 if not set)
   }
   "gpt-35-turbo-16k" = {
     name = "gpt-35-turbo-16k"
@@ -25,6 +26,7 @@ deployments = {
     model_format = "OpenAI"
     model_version = "0613"
     scale_type = "Standard"
+    capacity = 20  # 20,000 tokens per minute
   }
   "gpt-4" = {
     name = "gpt-4"
@@ -33,6 +35,7 @@ deployments = {
     model_format = "OpenAI"
     model_version = "0613"
     scale_type = "Standard"
+    capacity = 20  # 20,000 tokens per minute
   }
   "gpt-4-32k" = {
     name = "gpt-4-32k"
@@ -41,6 +44,7 @@ deployments = {
     model_format = "OpenAI"
     model_version = "0613"
     scale_type = "Standard"
+    capacity = 20  # 20,000 tokens per minute
   }
   "text-embedding-ada-002" = {
     name = "text-embedding-ada-002"
@@ -49,6 +53,7 @@ deployments = {
     model_format = "OpenAI"
     model_version = "2"
     scale_type = "Standard"
+    capacity = 20  # 20,000 tokens per minute
   }
 }
 

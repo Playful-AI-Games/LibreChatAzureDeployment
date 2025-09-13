@@ -63,6 +63,7 @@ variable "deployments" {
     model_name      = string
     model_version   = string
     scale_type      = string
+    capacity        = optional(number)  # Tokens-per-Minute (TPM) in thousands. E.g., 20 = 20,000 TPM
   }))
   default = {
     "gpt-4.1" = {
@@ -171,4 +172,11 @@ variable "amplitude_secret_instantgarden" {
   description = "amplitude secret key for amplitude-analytics-instantgarden MCP server"
   type        = string
   default     = ""
+}
+
+variable "sensor_tower_api_token" {
+  description = "Sensor Tower API token for sensortower MCP server"
+  type        = string
+  default     = ""
+  sensitive   = true
 }
