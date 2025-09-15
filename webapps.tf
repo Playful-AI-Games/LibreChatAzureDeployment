@@ -10,6 +10,9 @@ locals {
   azure_chat_deployment        = length(var.azure_openai_api_deployment_name) > 0 ? var.azure_openai_api_deployment_name : (contains(keys(var.deployments), "gpt-4.1") ? var.deployments["gpt-4.1"].name : "gpt-4.1")
   azure_embeddings_deployment  = length(var.azure_openai_api_embeddings_deployment_name) > 0 ? var.azure_openai_api_embeddings_deployment_name : (contains(keys(var.deployments), "text-embedding-ada-002") ? var.deployments["text-embedding-ada-002"].name : "text-embedding-ada-002")
   azure_completions_deployment = length(var.azure_openai_api_completions_deployment_name) > 0 ? var.azure_openai_api_completions_deployment_name : local.azure_chat_deployment
+  
+  # Construct the app URL for domain configuration
+  librechat_app_url = "https://librechatapp${random_string.random_postfix.result}.azurewebsites.net"
 }
 
 resource "azurerm_service_plan" "librechat" {
@@ -64,8 +67,8 @@ resource "azurerm_linux_web_app" "librechat" {
     # pool/concurrency and selection timeout tuning.
     MONGO_URI = var.mongo_uri # != "" ? var.mongo_uri : "${azurerm_cosmosdb_account.librechat.connection_strings[0]}&maxPoolSize=5&maxConnecting=2&serverSelectionTimeoutMS=15000"
 
-    DOMAIN_CLIENT = "http://localhost:3080"
-    DOMAIN_SERVER = "http://localhost:3080"
+    DOMAIN_CLIENT = local.librechat_app_url
+    DOMAIN_SERVER = local.librechat_app_url
 
     #===============#
     # Debug Logging #
@@ -150,15 +153,15 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     GOOGLE_KEY = "user_provided"
-    # GOOGLE_MODELS="gemini-pro,gemini-pro-vision,chat-bison,chat-bison-32k,codechat-bison,codechat-bison-32k,text-bison,text-bison-32k,text-unicorn,code-gecko,code-bison,code-bison-32k"
+    GOOGLE_MODELS="gemini-pro,gemini-pro-vision,chat-bison,chat-bison-32k,codechat-bison,codechat-bison-32k,text-bison,text-bison-32k,text-unicorn,code-gecko,code-bison,code-bison-32k"
     # GOOGLE_REVERSE_PROXY= "<YOUR REVERSE PROXY>"
 
     #============#
     # OpenAI     #
     #============#
 
-    # OPENAI_API_KEY = var.openai_key
-    # OPENAI_MODELS = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
+    OPENAI_API_KEY = var.openai_key
+    OPENAI_MODELS = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
 
     DEBUG_OPENAI = false
 
@@ -290,8 +293,8 @@ resource "azurerm_linux_web_app" "librechat" {
 
     ALLOW_EMAIL_LOGIN         = true
     ALLOW_REGISTRATION        = true
-    ALLOW_SOCIAL_LOGIN        = false
-    ALLOW_SOCIAL_REGISTRATION = false
+    ALLOW_SOCIAL_LOGIN        = true
+    ALLOW_SOCIAL_REGISTRATION = true
 
     SESSION_EXPIRY       = 1000 * 60 * 15
     REFRESH_TOKEN_EXPIRY = (1000 * 60 * 60 * 24) * 7
@@ -315,9 +318,9 @@ resource "azurerm_linux_web_app" "librechat" {
     # GITHUB_CALLBACK_URL=/oauth/github/callback
 
     # Google
-    # GOOGLE_CLIENT_ID=
-    # GOOGLE_CLIENT_SECRET=
-    # GOOGLE_CALLBACK_URL=/oauth/google/callback
+    GOOGLE_CLIENT_ID     = var.google_client_id
+    GOOGLE_CLIENT_SECRET = var.google_client_secret
+    GOOGLE_CALLBACK_URL="/oauth/google/callback"
 
     # OpenID
     # OPENID_CLIENT_ID=

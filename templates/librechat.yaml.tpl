@@ -32,51 +32,6 @@ interface:
   sidePanel: true
   presets: true
 
-# Custom endpoints for Azure OpenAI
-#endpoints:
-#  custom:
-#%{ for d in azure_deployments ~}
-#    - name: "Azure OpenAI"
-#      apiKey: "${azure_api_key}"
-#      baseURL: "https://${azure_instance}.openai.azure.com/openai/deployments/${d}"
-#      models:
-#        default: ["${d}"]
-#        fetch: false
-#      titleConvo: true
-#      titleModel: "${d}"
-#      summarize: false
-#      summaryModel: "${d}"
-#      forcePrompt: false
-#      modelDisplayLabel: "Azure OpenAI ${d}"
-#      dropParams: ["stop", "user", "frequency_penalty", "presence_penalty"]
-#      headers:
-#        api-key: "${azure_api_key}"
-#      params:
-#        api-version: "${azure_version}"
-#%{ endfor ~}
-
-# Agents configuration (currently disabled - uncomment if needed)
-#agents:
-#  # Enable agents endpoint
-#  enabled: true
-#  
-#  # Maximum recursion depth for agent actions
-#  recursionLimit: 10
-#  
-#  # Maximum allowed recursion limit that can be set
-#  maxRecursionLimit: 10
-#  
-#  # Enable/disable the agent builder interface
-#  disableBuilder: false
-#  
-#  # Maximum number of citations to display
-#  maxCitations: 5
-#  
-#  # Agent capabilities
-#  capabilities:
-#    - "webSearch"
-#    - "codeInterpreter"
-
 %{ if enable_mcp ~}
 
 # MCP (Model Context Protocol) Servers

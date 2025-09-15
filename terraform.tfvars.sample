@@ -97,3 +97,7 @@ public_network_access_enabled = false
 # mcp_oauth_on_auth_error = ""
 # mcp_oauth_detection_timeout = ""
 # mcp_connection_check_ttl = ""
+
+# Google OAuth Configuration (for social login)
+# google_client_id = ""
+# google_client_secret = ""

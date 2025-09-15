@@ -180,3 +180,16 @@ variable "sensor_tower_api_token" {
   default     = ""
   sensitive   = true
 }
+
+variable "google_client_id" {
+  description = "Google OAuth Client ID for social login"
+  type        = string
+  default     = ""
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth Client Secret for social login"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
