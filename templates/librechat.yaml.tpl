@@ -40,7 +40,7 @@ mcpServers:
     command: npx
     args:
       - -y
-      - amplitude-mcp
+      - "@playful-ai-games/amplitude-mcp"
       - --amplitude-api-key=$${AMPLITUDE_API_INSTANTGARDEN}
       - --amplitude-secret-key=$${AMPLITUDE_SECRET_INSTANTGARDEN}
     timeout: 60000        # Increase request timeout to 60 seconds

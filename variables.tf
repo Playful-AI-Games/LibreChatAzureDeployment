@@ -14,6 +14,13 @@ variable "openai_key" {
   sensitive   = true
 }
 
+variable "google_key" {
+  description = "Goolge/Gemini API Key"
+  default     = ""
+  sensitive   = true
+}
+
+
 variable "chatgpt_token" {
   description = "ChatGPT Token"
   default     = "user_provided"

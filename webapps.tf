@@ -88,7 +88,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #                     Endpoints                     #
     #===================================================#
 
-    ENDPOINTS = "azureOpenAI,agents" #openAI,azureOpenAI,bingAI,chatGPTBrowser,google,gptPlugins,anthropic,agents
+    ENDPOINTS = "azureOpenAI,anthropic,google,agents" #openAI,azureOpenAI,bingAI,chatGPTBrowser,google,gptPlugins,anthropic,agents
     
     # Enable agents endpoint for MCP support
     AGENTS_ENDPOINT = true
@@ -111,8 +111,8 @@ resource "azurerm_linux_web_app" "librechat" {
     # Anthropic  #
     #============#
 
-    # ANTHROPIC_API_KEY = "user_provided"
-    # ANTHROPIC_MODELS  = "claude-1,claude-instant-1,claude-2"
+    ANTHROPIC_API_KEY = var.anthropic_api_key
+    ANTHROPIC_MODELS  = "claude-sonnet-4-0,claude-opus-4-1,claude-3-7-sonnet-latest"
     # ANTHROPIC_REVERSE_PROXY=
 
     #============#
@@ -121,7 +121,7 @@ resource "azurerm_linux_web_app" "librechat" {
 
     AZURE_API_KEY       = module.openai.openai_primary_key
     AZURE_OPENAI_MODELS = "gpt-4.1,gpt-4.1-mini,gpt-4o"
-    AZURE_OPENAI_DEFAULT_MODEL = "gpt-4.1"
+    AZURE_OPENAI_DEFAULT_MODEL = "gpt-4o"
     # PLUGINS_USE_AZURE = true
 
     # Use deployment names as configured (each model has its own deployment)
@@ -152,8 +152,8 @@ resource "azurerm_linux_web_app" "librechat" {
     # Google     #
     #============#
 
-    GOOGLE_KEY = "user_provided"
-    GOOGLE_MODELS="gemini-pro,gemini-pro-vision,chat-bison,chat-bison-32k,codechat-bison,codechat-bison-32k,text-bison,text-bison-32k,text-unicorn,code-gecko,code-bison,code-bison-32k"
+    GOOGLE_KEY = var.google_key
+    GOOGLE_MODELS="gemini-2.5-pro,gemini-2.5-flash,gemini-2.0-flash"
     # GOOGLE_REVERSE_PROXY= "<YOUR REVERSE PROXY>"
 
     #============#
@@ -291,8 +291,8 @@ resource "azurerm_linux_web_app" "librechat" {
     # Registration and Login #
     #========================#
 
-    ALLOW_EMAIL_LOGIN         = true
-    ALLOW_REGISTRATION        = true
+    ALLOW_EMAIL_LOGIN         = false
+    ALLOW_REGISTRATION        = false
     ALLOW_SOCIAL_LOGIN        = true
     ALLOW_SOCIAL_REGISTRATION = true
 
