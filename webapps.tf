@@ -2,15 +2,15 @@
 locals {
   # This will cause terraform to fail if both are set
   validate_config = var.enable_mcp && var.config_path != "" ? file("ERROR: config_path cannot be set when enable_mcp is true. When MCP is enabled, the config is auto-generated and hosted in Azure Blob Storage.") : null
-  
+
   # Determine the CONFIG_PATH value based on settings
-  config_path_value = var.enable_mcp ? azurerm_storage_blob.librechat_config[0].url : var.config_path
+  config_path_value = var.enable_mcp ? "${azurerm_storage_blob.librechat_config[0].url}?${data.azurerm_storage_account_sas.librechat_config[0].sas}" : var.config_path
 
   # Resolve Azure OpenAI deployment names with sensible defaults
   azure_chat_deployment        = length(var.azure_openai_api_deployment_name) > 0 ? var.azure_openai_api_deployment_name : (contains(keys(var.deployments), "gpt-4.1") ? var.deployments["gpt-4.1"].name : "gpt-4.1")
   azure_embeddings_deployment  = length(var.azure_openai_api_embeddings_deployment_name) > 0 ? var.azure_openai_api_embeddings_deployment_name : (contains(keys(var.deployments), "text-embedding-ada-002") ? var.deployments["text-embedding-ada-002"].name : "text-embedding-ada-002")
   azure_completions_deployment = length(var.azure_openai_api_completions_deployment_name) > 0 ? var.azure_openai_api_completions_deployment_name : local.azure_chat_deployment
-  
+
   # Construct the app URL for domain configuration
   librechat_app_url = "https://librechatapp${random_string.random_postfix.result}.azurewebsites.net"
 }
@@ -33,8 +33,8 @@ resource "azurerm_linux_web_app" "librechat" {
   https_only                    = true
 
   site_config {
-    minimum_tls_version = "1.2"
-    vnet_route_all_enabled = true  # Route all outbound traffic through VNet
+    minimum_tls_version    = "1.2"
+    vnet_route_all_enabled = true # Route all outbound traffic through VNet
 
   }
 
@@ -75,7 +75,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #===============#
     DEBUG_LOGGING = true
     DEBUG_CONSOLE = false
-    DEBUG_VERBOSE = true  # Enable verbose logging for debugging config issues
+    DEBUG_VERBOSE = true # Enable verbose logging for debugging config issues
 
     #=============#
     # Permissions #
@@ -89,19 +89,19 @@ resource "azurerm_linux_web_app" "librechat" {
     #===================================================#
 
     ENDPOINTS = "azureOpenAI,anthropic,google,agents" #openAI,azureOpenAI,bingAI,chatGPTBrowser,google,gptPlugins,anthropic,agents
-    
+
     # Enable agents endpoint for MCP support
     AGENTS_ENDPOINT = true
-    
+
     # Allow config override from CONFIG_PATH
     ALLOW_CONFIG_OVERRIDE = "true"
-    
+
     # Config cache mode
     CONFIG_CACHE_MODE = "file"
-    
+
     # Enable config validation
     CONFIG_VALIDATE = "true"
-    
+
     # Debug config loading
     DEBUG_CONFIG = "true"
 
@@ -119,17 +119,17 @@ resource "azurerm_linux_web_app" "librechat" {
     # Azure      #
     #============#
 
-    AZURE_API_KEY       = module.openai.openai_primary_key
-    AZURE_OPENAI_MODELS = "gpt-4.1,gpt-4.1-mini,gpt-4o"
+    AZURE_API_KEY              = module.openai.openai_primary_key
+    AZURE_OPENAI_MODELS        = "gpt-4.1,gpt-4.1-mini,gpt-4o"
     AZURE_OPENAI_DEFAULT_MODEL = "gpt-4o"
     # PLUGINS_USE_AZURE = true
 
     # Use deployment names as configured (each model has its own deployment)
     AZURE_USE_MODEL_AS_DEPLOYMENT_NAME = "false"
 
-    AZURE_OPENAI_API_INSTANCE_NAME   = split("//", split(".", module.openai.openai_endpoint)[0])[1]
-    AZURE_OPENAI_API_DEPLOYMENT_NAME = local.azure_chat_deployment
-    AZURE_OPENAI_API_VERSION         = var.azure_openai_api_version
+    AZURE_OPENAI_API_INSTANCE_NAME               = split("//", split(".", module.openai.openai_endpoint)[0])[1]
+    AZURE_OPENAI_API_DEPLOYMENT_NAME             = local.azure_chat_deployment
+    AZURE_OPENAI_API_VERSION                     = var.azure_openai_api_version
     AZURE_OPENAI_API_COMPLETIONS_DEPLOYMENT_NAME = local.azure_completions_deployment
     AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME  = local.azure_embeddings_deployment
 
@@ -152,8 +152,8 @@ resource "azurerm_linux_web_app" "librechat" {
     # Google     #
     #============#
 
-    GOOGLE_KEY = var.google_key
-    GOOGLE_MODELS="gemini-2.5-pro,gemini-2.5-flash,gemini-2.0-flash"
+    GOOGLE_KEY    = var.google_key
+    GOOGLE_MODELS = "gemini-2.5-pro,gemini-2.5-flash,gemini-2.0-flash"
     # GOOGLE_REVERSE_PROXY= "<YOUR REVERSE PROXY>"
 
     #============#
@@ -161,7 +161,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     OPENAI_API_KEY = var.openai_key
-    OPENAI_MODELS = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
+    OPENAI_MODELS  = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
 
     DEBUG_OPENAI = false
 
@@ -233,7 +233,7 @@ resource "azurerm_linux_web_app" "librechat" {
     # AMPLITUDE Analytics for InstantGarden MCP
     AMPLITUDE_API_INSTANTGARDEN    = var.amplitude_api_instantgarden
     AMPLITUDE_SECRET_INSTANTGARDEN = var.amplitude_secret_instantgarden
-    
+
     # Sensor Tower API for sensortower MCP
     SENSOR_TOWER_API_TOKEN = var.sensor_tower_api_token
 
@@ -320,7 +320,7 @@ resource "azurerm_linux_web_app" "librechat" {
     # Google
     GOOGLE_CLIENT_ID     = var.google_client_id
     GOOGLE_CLIENT_SECRET = var.google_client_secret
-    GOOGLE_CALLBACK_URL="/oauth/google/callback"
+    GOOGLE_CALLBACK_URL  = "/oauth/google/callback"
 
     # OpenID
     # OPENID_CLIENT_ID=
