@@ -181,6 +181,18 @@ variable "amplitude_secret_instantgarden" {
   default     = ""
 }
 
+variable "amplitude_api_alphalife" {
+  description = "amplitude api key for amplitude-analytics-alphalife MCP server"
+  type        = string
+  default     = ""
+}
+
+variable "amplitude_secret_alphalife" {
+  description = "amplitude secret key for amplitude-analytics-alphalife MCP server"
+  type        = string
+  default     = ""
+}
+
 variable "sensor_tower_api_token" {
   description = "Sensor Tower API token for sensortower MCP server"
   type        = string

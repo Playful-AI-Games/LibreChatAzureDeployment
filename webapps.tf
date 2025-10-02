@@ -120,7 +120,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     AZURE_API_KEY              = module.openai.openai_primary_key
-    AZURE_OPENAI_MODELS        = "gpt-4.1,gpt-4.1-mini,gpt-4o"
+    AZURE_OPENAI_MODELS        = "gpt-4.1,gpt-4.1-mini,gpt-4o,gpt-5,gpt-5-mini,gpt-5-chat"
     AZURE_OPENAI_DEFAULT_MODEL = "gpt-4o"
     # PLUGINS_USE_AZURE = true
 
@@ -161,7 +161,8 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     OPENAI_API_KEY = var.openai_key
-    OPENAI_MODELS  = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
+#    OPENAI_MODELS  = "gpt-3.5-turbo-1106,gpt-4-1106-preview,gpt-3.5-turbo,gpt-3.5-turbo-16k,gpt-3.5-turbo-0301,text-davinci-003,gpt-4,gpt-4-0314,gpt-4-0613"
+    OPENAI_MODELS  = "gpt-5,gpt-5-mini,gpt-5-chat"
 
     DEBUG_OPENAI = false
 
@@ -230,9 +231,11 @@ resource "azurerm_linux_web_app" "librechat" {
     #-----------------
     # ZAPIER_NLA_API_KEY=
 
-    # AMPLITUDE Analytics for InstantGarden MCP
+    # AMPLITUDE Analytics for Project MCPs
     AMPLITUDE_API_INSTANTGARDEN    = var.amplitude_api_instantgarden
     AMPLITUDE_SECRET_INSTANTGARDEN = var.amplitude_secret_instantgarden
+    AMPLITUDE_API_ALPHALIFE        = var.amplitude_api_alphalife
+    AMPLITUDE_SECRET_ALPHALIFE     = var.amplitude_secret_alphalife 
 
     # Sensor Tower API for sensortower MCP
     SENSOR_TOWER_API_TOKEN = var.sensor_tower_api_token

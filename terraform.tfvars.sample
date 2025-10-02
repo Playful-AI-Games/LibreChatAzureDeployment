@@ -1,4 +1,4 @@
-location = "region_name" # for e.g. australiaeast
+location = "region_name" # for e.g. australiaeast  // gpt5 only availalbe in eastus2
 app_title = "librechat"
 openai_key = ""
 chatgpt_token = "user_provided"
@@ -10,41 +10,41 @@ mongo_uri = ""
 use_cosmosdb_free_tier = true
 
 deployments = {
-  "gpt-35-turbo" = {
-    name = "gpt-35-turbo"
+  "gpt-5-chat" = {
+    name            = "gpt-5-chat"
     rai_policy_name = "Microsoft.Default"
-    model_name = "gpt-35-turbo"
-    model_format = "OpenAI"
-    model_version = "0613"
-    scale_type = "Standard"
-    capacity = 20  # 20,000 tokens per minute (optional, defaults to 1,000 if not set)
+    model_name      = "gpt-5-chat"
+    model_format    = "OpenAI"
+    model_version   = "2025-08-07"
+    scale_type      = "GlobalStandard"
+    capacity        = 20
   }
-  "gpt-35-turbo-16k" = {
-    name = "gpt-35-turbo-16k"
+  "gpt-4.1" = {
+    name            = "gpt-4.1"
     rai_policy_name = "Microsoft.Default"
-    model_name = "gpt-35-turbo-16k"
-    model_format = "OpenAI"
-    model_version = "0613"
-    scale_type = "Standard"
-    capacity = 20  # 20,000 tokens per minute
+    model_name      = "gpt-4.1"
+    model_format    = "OpenAI"
+    model_version   = "2025-04-14"
+    scale_type      = "DataZoneStandard"
+    capacity        = 19 # 20,000 tokens per minute
   }
-  "gpt-4" = {
-    name = "gpt-4"
+  "gpt-4.1-mini" = {
+    name            = "gpt-4.1-mini"
     rai_policy_name = "Microsoft.Default"
-    model_name = "gpt-4"
-    model_format = "OpenAI"
-    model_version = "0613"
-    scale_type = "Standard"
-    capacity = 20  # 20,000 tokens per minute
+    model_name      = "gpt-4.1-mini"
+    model_format    = "OpenAI"
+    model_version   = "2025-04-14"
+    scale_type      = "DataZoneStandard"
+    capacity        = 19 # 20,000 tokens per minute
   }
-  "gpt-4-32k" = {
-    name = "gpt-4-32k"
+  "gpt-4o" = {
+    name            = "gpt-4o"
     rai_policy_name = "Microsoft.Default"
-    model_name = "gpt-4-32k"
-    model_format = "OpenAI"
-    model_version = "0613"
-    scale_type = "Standard"
-    capacity = 20  # 20,000 tokens per minute
+    model_name      = "gpt-4o"
+    model_format    = "OpenAI"
+    model_version   = "2024-11-20"
+    scale_type      = "DataZoneStandard"
+    capacity        = 19 # 20,000 tokens per minute
   }
   "text-embedding-ada-002" = {
     name = "text-embedding-ada-002"
@@ -101,3 +101,10 @@ public_network_access_enabled = false
 # Google OAuth Configuration (for social login)
 # google_client_id = ""
 # google_client_secret = ""
+
+# specific MCP config
+#amplitude_api_instantgarden    = "your_api_key"
+#amplitude_secret_instantgarden = "your_api_key"
+#amplitude_api_alphalife    = "your_api_key"
+#amplitude_secret_alphalife = "your_api_key"
+#sensor_tower_api_token         = "your_api_key"
