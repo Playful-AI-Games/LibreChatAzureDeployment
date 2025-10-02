@@ -19,8 +19,8 @@ deployments = {
     scale_type      = "GlobalStandard"
     capacity        = 20
   }
-  "gpt-4.1" = {
-    name            = "gpt-4.1"
+  "gpt-41" = {
+    name            = "gpt-41"
     rai_policy_name = "Microsoft.Default"
     model_name      = "gpt-4.1"
     model_format    = "OpenAI"
@@ -28,8 +28,8 @@ deployments = {
     scale_type      = "DataZoneStandard"
     capacity        = 19 # 20,000 tokens per minute
   }
-  "gpt-4.1-mini" = {
-    name            = "gpt-4.1-mini"
+  "gpt-41-mini" = {
+    name            = "gpt-41-mini"
     rai_policy_name = "Microsoft.Default"
     model_name      = "gpt-4.1-mini"
     model_format    = "OpenAI"

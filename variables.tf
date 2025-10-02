@@ -73,12 +73,12 @@ variable "deployments" {
     capacity        = optional(number)  # Tokens-per-Minute (TPM) in thousands. E.g., 20 = 20,000 TPM
   }))
   default = {
-    "gpt-4.1" = {
-      name            = "gpt-4.1"
+    "gpt-5-chat" = {
+      name            = "gpt-5-chat"
       rai_policy_name = "Microsoft.Default"
-      model_name      = "gpt-4"
+      model_name      = "gpt-5"
       model_format    = "OpenAI"
-      model_version   = "2025-04-14"
+      model_version   = "2025-08-07"
       scale_type      = "Standard"
     },
     "text-embedding-ada-002" = {
@@ -104,7 +104,7 @@ variable "azure_openai_api_completions_deployment_name" {
 
 variable "azure_openai_api_version" {
   description = "The version of your Azure OpenAI API"
-  default     = "2024-02-01"
+  default     = "2024-12-01-preview"
 }
 
 variable "azure_openai_api_embeddings_deployment_name" {

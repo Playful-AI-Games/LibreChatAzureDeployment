@@ -69,6 +69,20 @@ mcpServers:
 
 
 
+# Azure OpenAI Endpoint Configuration
+endpoints:
+  azureOpenAI:
+    groups:
+      - group: "azure-deployments"
+        apiKey: "${azure_api_key}"
+        instanceName: "${azure_instance}"
+        version: "${azure_version}"
+        models:
+%{ for deployment_name in azure_deployments ~}
+          ${deployment_name}:
+            deploymentName: ${deployment_name}
+%{ endfor ~}
+
 # File configuration
 fileConfig:
   endpoints:
