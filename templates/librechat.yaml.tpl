@@ -46,6 +46,17 @@ mcpServers:
     timeout: 60000        # Increase request timeout to 60 seconds
     initTimeout: 60000    # Increase initialization timeout to 60 seconds
 
+  amplitude-analytics-alphalife:
+    command: npx
+    args:
+      - -y
+      - "@playful-ai-games/amplitude-mcp"
+      - --amplitude-api-key=$${AMPLITUDE_API_ALPHALIFE}
+      - --amplitude-secret-key=$${AMPLITUDE_SECRET_ALPHALIFE}
+    timeout: 60000        # Increase request timeout to 60 seconds
+    initTimeout: 60000    # Increase initialization timeout to 60 seconds
+
+
   sensortower: 
     command: uvx
     args: 
