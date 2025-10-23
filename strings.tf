@@ -20,18 +20,12 @@ resource "random_string" "jwt_refresh_secret" {
   special = false
 }
 
-resource "random_string" "creds_key" {
-  length  = 64
-  lower   = true
-  upper   = false
-  special = false
+resource "random_id" "creds_key" {
+  byte_length = 32
 }
 
-resource "random_string" "creds_iv" {
-  length  = 32
-  lower   = true
-  upper   = false
-  special = false
+resource "random_id" "creds_iv" {
+  byte_length = 16
 }
 
 resource "random_string" "meilisearch_master_key" {

@@ -107,4 +107,7 @@ public_network_access_enabled = false
 #amplitude_secret_instantgarden = "your_api_key"
 #amplitude_api_alphalife    = "your_api_key"
 #amplitude_secret_alphalife = "your_api_key"
+#amplitude_official_client_id    = "your_client_id"
+#amplitude_official_client_secret = "your_client_secret"
+#amplitude_official_scope        = "mcp:read mcp:write offline_access"
 #sensor_tower_api_token         = "your_api_key"

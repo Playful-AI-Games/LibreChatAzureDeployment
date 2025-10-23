@@ -1,0 +1,119 @@
+#!/bin/bash
+
+# LibreChat MCP Configuration Verification Script
+
+echo "LibreChat MCP Configuration Verification"
+echo "========================================"
+echo ""
+
+CONFIG_URL="https://librechatcfg3lr3q5cc.blob.core.windows.net/config/librechat.yaml"
+
+echo "1. Checking if config file is accessible..."
+if curl -s -f -o /dev/null "$CONFIG_URL"; then
+    echo "   ✓ Config file is accessible"
+else
+    echo "   ✗ Config file is NOT accessible"
+    exit 1
+fi
+
+echo ""
+echo "2. Downloading and validating YAML syntax..."
+TEMP_FILE=$(mktemp)
+curl -s "$CONFIG_URL" > "$TEMP_FILE"
+
+# Check if python is available for YAML validation
+if command -v python3 &> /dev/null; then
+    python3 -c "import yaml; yaml.safe_load(open('$TEMP_FILE'))" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "   ✓ YAML syntax is valid"
+    else
+        echo "   ✗ YAML syntax is INVALID"
+        echo ""
+        echo "   Attempting to show the error:"
+        python3 -c "
+import yaml
+try:
+    with open('$TEMP_FILE') as f:
+        yaml.safe_load(f)
+except yaml.YAMLError as e:
+    print(f'   Error: {e}')
+" 2>&1
+    fi
+else
+    echo "   ⚠ Python not available for YAML validation"
+fi
+
+echo ""
+echo "3. Checking for required sections..."
+echo ""
+
+# Check for version
+if grep -q "^version:" "$TEMP_FILE"; then
+    VERSION=$(grep "^version:" "$TEMP_FILE" | cut -d' ' -f2)
+    echo "   ✓ Version found: $VERSION"
+else
+    echo "   ✗ Version not found"
+fi
+
+# Check for agents section
+if grep -q "^agents:" "$TEMP_FILE"; then
+    echo "   ✓ Agents section found"
+    if grep -q "enabled: true" "$TEMP_FILE"; then
+        echo "     ✓ Agents enabled"
+    else
+        echo "     ✗ Agents not explicitly enabled"
+    fi
+else
+    echo "   ✗ Agents section not found"
+fi
+
+# Check for mcpServers section
+if grep -q "^mcpServers:" "$TEMP_FILE"; then
+    echo "   ✓ MCP Servers section found"
+    echo "     Configured servers:"
+    grep "^  [a-z]" "$TEMP_FILE" | grep -v "^  #" | sed 's/://' | sed 's/^/       - /'
+else
+    echo "   ✗ MCP Servers section not found"
+fi
+
+# Check for interface section
+if grep -q "^interface:" "$TEMP_FILE"; then
+    echo "   ✓ Interface section found"
+else
+    echo "   ✗ Interface section not found"
+fi
+
+echo ""
+echo "4. Checking for problematic patterns..."
+echo ""
+
+# Check for tabs (should only use spaces)
+if grep -P '\t' "$TEMP_FILE" > /dev/null; then
+    echo "   ✗ WARNING: File contains tabs (should use spaces only)"
+    echo "     Lines with tabs:"
+    grep -n -P '\t' "$TEMP_FILE" | head -5
+else
+    echo "   ✓ No tabs found (good)"
+fi
+
+# Check for template variables that weren't replaced
+if grep -E '\$\{[A-Z_]+\}' "$TEMP_FILE" > /dev/null; then
+    echo "   ⚠ Template variables found (these should be replaced by LibreChat at runtime):"
+    grep -o -E '\$\{[A-Z_]+\}' "$TEMP_FILE" | sort | uniq | sed 's/^/       /'
+else
+    echo "   ✓ No unreplaced template variables"
+fi
+
+echo ""
+echo "5. First 50 lines of the config file:"
+echo "========================================"
+head -50 "$TEMP_FILE"
+
+# Cleanup
+rm "$TEMP_FILE"
+
+echo ""
+echo "========================================"
+echo "Verification complete."
+echo ""
+echo "If the YAML is invalid, run 'terraform apply' to regenerate it with the fixes."

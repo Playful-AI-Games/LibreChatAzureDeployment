@@ -50,6 +50,7 @@ locals {
     enable_mcp        = var.enable_mcp
     mcp_servers       = var.mcp_servers
     app_title         = var.app_title
+    librechat_app_url = local.librechat_app_url
     azure_api_key     = "$${AZURE_API_KEY}" # Escaped to be literal in output
     azure_instance    = "$${AZURE_OPENAI_API_INSTANCE_NAME}"
     azure_deployments = [for k, v in var.deployments : v.name]

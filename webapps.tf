@@ -13,6 +13,10 @@ locals {
 
   # Construct the app URL for domain configuration
   librechat_app_url = "https://librechatapp${random_string.random_postfix.result}.azurewebsites.net"
+
+  # Provide credential encryption key material as hex strings compatible with LibreChat crypto helper
+  creds_key_hex = random_id.creds_key.hex
+  creds_iv_hex  = random_id.creds_iv.hex
 }
 
 resource "azurerm_service_plan" "librechat" {
@@ -190,8 +194,8 @@ resource "azurerm_linux_web_app" "librechat" {
 
     DEBUG_PLUGINS = true
 
-    CREDS_KEY = random_string.creds_key.result
-    CREDS_IV  = random_string.creds_iv.result
+    CREDS_KEY = local.creds_key_hex
+    CREDS_IV  = local.creds_iv_hex
 
     # Azure AI Search
     #-----------------
@@ -235,7 +239,10 @@ resource "azurerm_linux_web_app" "librechat" {
     AMPLITUDE_API_INSTANTGARDEN    = var.amplitude_api_instantgarden
     AMPLITUDE_SECRET_INSTANTGARDEN = var.amplitude_secret_instantgarden
     AMPLITUDE_API_ALPHALIFE        = var.amplitude_api_alphalife
-    AMPLITUDE_SECRET_ALPHALIFE     = var.amplitude_secret_alphalife 
+    AMPLITUDE_SECRET_ALPHALIFE     = var.amplitude_secret_alphalife
+    AMPLITUDE_OFFICIAL_CLIENT_ID   = var.amplitude_official_client_id
+    AMPLITUDE_OFFICIAL_CLIENT_SECRET = var.amplitude_official_client_secret
+    AMPLITUDE_OFFICIAL_SCOPE       = var.amplitude_official_scope
 
     # Sensor Tower API for sensortower MCP
     SENSOR_TOWER_API_TOKEN = var.sensor_tower_api_token

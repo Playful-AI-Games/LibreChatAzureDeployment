@@ -36,26 +36,39 @@ interface:
 
 # MCP (Model Context Protocol) Servers
 mcpServers:
-  amplitude-analytics-instantgarden:
-    command: npx
-    args:
-      - -y
-      - "@playful-ai-games/amplitude-mcp"
-      - --amplitude-api-key=$${AMPLITUDE_API_INSTANTGARDEN}
-      - --amplitude-secret-key=$${AMPLITUDE_SECRET_INSTANTGARDEN}
-    timeout: 60000        # Increase request timeout to 60 seconds
-    initTimeout: 60000    # Increase initialization timeout to 60 seconds
+  # amplitude-analytics-instantgarden:
+  #   command: npx
+  #   args:
+  #     - -y
+  #     - "@playful-ai-games/amplitude-mcp"
+  #     - --amplitude-api-key=$${AMPLITUDE_API_INSTANTGARDEN}
+  #     - --amplitude-secret-key=$${AMPLITUDE_SECRET_INSTANTGARDEN}
+  #   timeout: 60000        # Increase request timeout to 60 seconds
+  #   initTimeout: 60000    # Increase initialization timeout to 60 seconds
 
-  amplitude-analytics-alphalife:
-    command: npx
-    args:
-      - -y
-      - "@playful-ai-games/amplitude-mcp"
-      - --amplitude-api-key=$${AMPLITUDE_API_ALPHALIFE}
-      - --amplitude-secret-key=$${AMPLITUDE_SECRET_ALPHALIFE}
-    timeout: 60000        # Increase request timeout to 60 seconds
-    initTimeout: 60000    # Increase initialization timeout to 60 seconds
+  # amplitude-analytics-alphalife:
+  #   command: npx
+  #   args:
+  #     - -y
+  #     - "@playful-ai-games/amplitude-mcp"
+  #     - --amplitude-api-key=$${AMPLITUDE_API_ALPHALIFE}
+  #     - --amplitude-secret-key=$${AMPLITUDE_SECRET_ALPHALIFE}
+  #   timeout: 60000        # Increase request timeout to 60 seconds
+  #   initTimeout: 60000    # Increase initialization timeout to 60 seconds
 
+  amplitude-official:
+    url: https://mcp.amplitude.com/mcp
+    type: streamable-http
+    requiresOAuth: true
+    timeout: 60000
+    initTimeout: 60000
+    oauth:
+      authorizationUrl: "https://auth.amplitude.com/oauth2/auth"
+      tokenUrl: "https://auth.amplitude.com/oauth2/token"
+      # clientId: "$${AMPLITUDE_OFFICIAL_CLIENT_ID}"
+      # clientSecret: "$${AMPLITUDE_OFFICIAL_CLIENT_SECRET}"
+      # scope: "$${AMPLITUDE_OFFICIAL_SCOPE}"
+      redirectUri: "${librechat_app_url}/api/mcp/amplitude-official/oauth/callback"
 
   sensortower: 
     command: uvx

@@ -193,6 +193,25 @@ variable "amplitude_secret_alphalife" {
   default     = ""
 }
 
+variable "amplitude_official_client_id" {
+  description = "OAuth client ID for the Amplitude official streamable MCP server"
+  type        = string
+  default     = ""
+}
+
+variable "amplitude_official_client_secret" {
+  description = "OAuth client secret for the Amplitude official streamable MCP server"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "amplitude_official_scope" {
+  description = "OAuth scopes requested for the Amplitude official MCP server"
+  type        = string
+  default     = "mcp:read mcp:write offline_access"
+}
+
 variable "sensor_tower_api_token" {
   description = "Sensor Tower API token for sensortower MCP server"
   type        = string
