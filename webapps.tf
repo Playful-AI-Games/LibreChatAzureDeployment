@@ -116,7 +116,7 @@ resource "azurerm_linux_web_app" "librechat" {
     #============#
 
     ANTHROPIC_API_KEY = var.anthropic_api_key
-    ANTHROPIC_MODELS  = "claude-sonnet-4-0,claude-opus-4-1,claude-3-7-sonnet-latest"
+    ANTHROPIC_MODELS  = "claude-sonnet-4-5,claude-opus-4-1,claude-haiku-4-5"
     # ANTHROPIC_REVERSE_PROXY=
 
     #============#
